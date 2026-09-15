@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hanifah Tsitohaina — Cloud Engineer</title>
+<meta name="description" content="Cloud Engineer specialising in Microsoft Azure, infrastructure as code and cloud migration.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171C;
+    --paper:#FAFAF8;
+    --panel:#EFEFEA;
+    --line:#D8D8D4;
+    --muted:#6B6F76;
+    --accent:#E0001B;
+    --max:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Archivo", sans-serif;
+    font-weight:400;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 32px;}
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+
+  /* ---------- Nav ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(250,250,248,0.92);
+    backdrop-filter:saturate(180%) blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .nav .name{font-weight:700; font-size:17px; text-decoration:none; letter-spacing:-0.01em;}
+  .nav ul{list-style:none; display:flex; gap:28px; margin:0; padding:0;}
+  .nav a.link{
+    text-decoration:none; font-size:15px; color:var(--ink);
+    padding:4px 2px; border-bottom:1px solid transparent;
+  }
+  .nav a.link:hover, .nav a.link:focus-visible{border-bottom-color:var(--accent);}
+  .nav .cv-btn{
+    font-size:14px; text-decoration:none; color:var(--paper);
+    background:var(--ink); padding:9px 16px; border-radius:2px;
+  }
+  .nav .cv-btn:hover{background:var(--accent);}
+  .burger{display:none; background:none; border:none; cursor:pointer; padding:8px;}
+  .burger span{display:block; width:22px; height:2px; background:var(--ink); margin:5px 0;}
+  @media (max-width:800px){
+    .nav ul{display:none;}
+    .burger{display:block;}
+    .nav.open ul{
+      display:flex; flex-direction:column; position:absolute; top:64px; left:0; right:0;
+      background:var(--paper); border-bottom:1px solid var(--line); padding:16px 20px; gap:16px;
+    }
+  }
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:88px 0 96px;}
+  .hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;}
+  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+  .eyebrow{font-size:15px; color:var(--muted); margin:0 0 18px;}
+  h1.headline{
+    font-size:clamp(34px, 5vw, 56px); font-weight:800; letter-spacing:-0.02em;
+    line-height:1.05; margin:0 0 24px;
+  }
+  .headline .accent{color:var(--accent);}
+  .lede{font-size:18px; color:var(--muted); max-width:46ch; margin:0 0 32px;}
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block; text-decoration:none; font-size:15px; font-weight:600;
+    padding:13px 22px; border-radius:2px; border:1px solid var(--ink);
+  }
+  .btn.primary{background:var(--ink); color:var(--paper);}
+  .btn.primary:hover{background:var(--accent); border-color:var(--accent);}
+  .btn.ghost{background:transparent; color:var(--ink);}
+  .btn.ghost:hover{border-color:var(--accent); color:var(--accent);}
+  .hero-meta{margin-top:28px; font-size:14px; color:var(--muted);}
+
+  .diagram{width:100%; height:auto;}
+
+  /* ---------- Section shell ---------- */
+  section{padding:72px 0; border-top:1px solid var(--line);}
+  .section-head{display:grid; grid-template-columns:220px 1fr; gap:32px; margin-bottom:40px;}
+  @media (max-width:700px){ .section-head{grid-template-columns:1fr; gap:8px;} }
+  .section-label{font-size:15px; color:var(--muted);}
+  h2{font-size:clamp(24px,3vw,32px); font-weight:700; letter-spacing:-0.01em; margin:0;}
+
+  /* ---------- About ---------- */
+  .about-body{display:grid; grid-template-columns:220px 1fr; gap:32px;}
+  @media (max-width:700px){ .about-body{grid-template-columns:1fr;} }
+  .about-text p{font-size:17px; max-width:62ch; margin:0 0 18px; color:#2b2e33;}
+  .about-facts{list-style:none; margin:28px 0 0; padding:0; display:grid; gap:10px; font-size:15px; color:var(--muted);}
+  .about-facts b{color:var(--ink); font-weight:600;}
+
+  /* ---------- Skills ---------- */
+  .skills-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:0; border-top:1px solid var(--line); border-left:1px solid var(--line);}
+  @media (max-width:800px){ .skills-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .skills-grid{grid-template-columns:1fr;} }
+  .skill-cell{padding:26px 24px; border-right:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .skill-cell h3{font-size:16px; font-weight:700; margin:0 0 12px;}
+  .skill-cell ul{margin:0; padding:0; list-style:none; font-size:14.5px; color:var(--muted); display:grid; gap:6px;}
+
+  /* ---------- Certifications ---------- */
+  .certs{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+  @media (max-width:800px){ .certs{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .certs{grid-template-columns:1fr;} }
+  .cert{background:var(--paper); padding:22px;}
+  .cert .status{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin-bottom:10px;}
+  .dot{width:8px; height:8px; border-radius:50%; border:1.5px solid var(--ink); display:inline-block;}
+  .dot.done{background:var(--accent); border-color:var(--accent);}
+  .cert h4{font-size:15.5px; margin:0 0 4px; font-weight:700;}
+  .cert p{margin:0; font-size:13.5px; color:var(--muted);}
+
+  /* ---------- Experience ---------- */
+  .timeline{display:grid; gap:0;}
+  .job{display:grid; grid-template-columns:180px 1fr; gap:32px; padding:26px 0; border-bottom:1px solid var(--line);}
+  @media (max-width:700px){ .job{grid-template-columns:1fr; gap:6px;} }
+  .job .dates{font-size:14px; color:var(--muted); padding-top:2px;}
+  .job h3{font-size:17px; margin:0 0 4px; font-weight:700;}
+  .job .org{font-size:14.5px; color:var(--muted); margin:0 0 12px;}
+  .job ul{margin:0; padding-left:18px; font-size:15px; color:#2b2e33; display:grid; gap:6px;}
+
+  /* ---------- Projects ---------- */
+  .project{
+    display:grid; grid-template-columns:1fr auto; gap:24px; align-items:start;
+    padding:32px 0; border-bottom:1px solid var(--line);
+  }
+  .project:first-of-type{border-top:1px solid var(--line);}
+  .project-title{font-size:22px; font-weight:700; margin:0 0 10px; letter-spacing:-0.01em;}
+  .project-title a{text-decoration:none;}
+  .project-title a:hover{color:var(--accent);}
+  .project p.desc{font-size:15.5px; color:var(--muted); max-width:58ch; margin:0 0 14px;}
+  .tags{display:flex; gap:8px; flex-wrap:wrap;}
+  .tag{font-size:12.5px; color:var(--muted); border:1px solid var(--line); padding:4px 10px; border-radius:2px;}
+  .status-flag{font-size:13px; color:var(--accent); font-weight:600; white-space:nowrap; padding-top:4px;}
+  @media (max-width:640px){ .project{grid-template-columns:1fr;} .status-flag{padding-top:0;} }
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid; grid-template-columns:220px 1fr; gap:32px;}
+  @media (max-width:700px){ .contact-grid{grid-template-columns:1fr;} }
+  .contact-list{list-style:none; margin:0; padding:0; display:grid; gap:14px; font-size:17px;}
+  .contact-list a{text-decoration:none; border-bottom:1px solid var(--line);}
+  .contact-list a:hover{border-color:var(--accent); color:var(--accent);}
+
+  footer{padding:32px 0; border-top:1px solid var(--line);}
+  .foot-row{display:flex; justify-content:space-between; align-items:center; font-size:13.5px; color:var(--muted); flex-wrap:wrap; gap:10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav" id="nav">
+    <a class="name" href="#top">Hanifah Tsitohaina</a>
+    <ul>
+      <li><a class="link" href="#about">About</a></li>
+      <li><a class="link" href="#skills">Skills</a></li>
+      <li><a class="link" href="#experience">Experience</a></li>
+      <li><a class="link" href="#projects">Projects</a></li>
+      <li><a class="link" href="#contact">Contact</a></li>
+    </ul>
+    <a class="cv-btn" href="cv.pdf">Resume</a>
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none;">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Cloud Engineer — Microsoft Azure</p>
+        <h1 class="headline">I build and secure Azure infrastructure, <span class="accent">as code.</span></h1>
+        <p class="lede">Hands-on experience in cloud migration, infrastructure automation and Kubernetes workloads. Currently preparing AZ-104, based in Geneva and open to roles across Switzerland or remote.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#projects">View projects</a>
+          <a class="btn ghost" href="#contact">Get in touch</a>
+        </div>
+        <p class="hero-meta">Geneva, Switzerland · Available immediately · Open to nationwide relocation</p>
+      </div>
+      <div>
+        <svg class="diagram" viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hub-and-spoke network diagram">
+          <line x1="210" y1="170" x2="80" y2="70" stroke="#D8D8D4" stroke-width="1.5"/>
+          <line x1="210" y1="170" x2="340" y2="60" stroke="#D8D8D4" stroke-width="1.5"/>
+          <line x1="210" y1="170" x2="70" y2="260" stroke="#D8D8D4" stroke-width="1.5"/>
+          <line x1="210" y1="170" x2="330" y2="270" stroke="#D8D8D4" stroke-width="1.5"/>
+          <line x1="210" y1="170" x2="210" y2="30" stroke="#D8D8D4" stroke-width="1.5"/>
+
+          <circle cx="80" cy="70" r="7" fill="none" stroke="#14171C" stroke-width="1.5"/>
+          <circle cx="340" cy="60" r="7" fill="none" stroke="#14171C" stroke-width="1.5"/>
+          <circle cx="70" cy="260" r="7" fill="none" stroke="#14171C" stroke-width="1.5"/>
+          <circle cx="330" cy="270" r="7" fill="none" stroke="#14171C" stroke-width="1.5"/>
+          <circle cx="210" cy="30" r="7" fill="none" stroke="#14171C" stroke-width="1.5"/>
+
+          <circle cx="210" cy="170" r="13" fill="#E0001B"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">About</p>
+        <h2>From on-the-ground IT support to cloud infrastructure</h2>
+      </div>
+      <div class="about-body">
+        <div></div>
+        <div class="about-text">
+          <p>I'm a Cloud Engineer with practical experience in Microsoft Azure, cloud migration and infrastructure automation — skilled in Terraform, Ansible and Kubernetes. My background spans application integration, systems automation and cloud operations across aerospace, luxury retail and healthcare environments before specialising fully in Azure.</p>
+          <p>I'm particularly interested in application and database migrations, AKS workloads, monitoring, and the continuous improvement of production environments. Since March 2024 I've been working full-time on strengthening my Azure and DevOps skills through hands-on labs and personal projects, while preparing the AZ-104 and AZ-400 certifications.</p>
+          <ul class="about-facts">
+            <li><b>Languages —</b> French (native), English (C1), German (B1, working towards B2)</li>
+            <li><b>Nationality —</b> French</li>
+            <li><b>Location —</b> Geneva, Switzerland · open to relocation nationwide or remote work</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Skills</p>
+        <h2>Technical proficiency</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-cell">
+          <h3>Cloud & Infrastructure</h3>
+          <ul>
+            <li>Azure VM, App Services, Functions, AKS</li>
+            <li>Azure SQL, Storage, Key Vault</li>
+            <li>Application Gateway, VPN Gateway</li>
+            <li>Azure Monitor, Azure AD</li>
+            <li>Office 365, Exchange Online, Intune</li>
+          </ul>
+        </div>
+        <div class="skill-cell">
+          <h3>Virtualisation & Systems</h3>
+          <ul>
+            <li>Windows Server, Linux</li>
+            <li>VMware, Hyper-V</li>
+            <li>Active Directory, GPO</li>
+          </ul>
+        </div>
+        <div class="skill-cell">
+          <h3>Networking & Security</h3>
+          <ul>
+            <li>TCP/IP, DNS, DHCP, VPN, routing</li>
+            <li>Firewalls, network isolation</li>
+            <li>Identity & access management, hardening</li>
+          </ul>
+        </div>
+        <div class="skill-cell">
+          <h3>DevOps & Containers</h3>
+          <ul>
+            <li>Docker, Kubernetes, Helm</li>
+            <li>CI/CD — Azure DevOps, GitHub Actions</li>
+          </ul>
+        </div>
+        <div class="skill-cell">
+          <h3>Automation & Scripting</h3>
+          <ul>
+            <li>PowerShell, Bash, Python, Azure CLI</li>
+            <li>Infrastructure as Code — Terraform, ARM/Bicep</li>
+          </ul>
+        </div>
+        <div class="skill-cell">
+          <h3>Methods & Practices</h3>
+          <ul>
+            <li>ITIL, Agile/Scrum</li>
+            <li>Incident, problem & change management</li>
+            <li>Technical documentation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Certifications</p>
+        <h2>Credentials</h2>
+      </div>
+      <div class="certs">
+        <div class="cert">
+          <div class="status"><span class="dot done"></span>Completed</div>
+          <h4>AZ-900</h4>
+          <p>Microsoft Azure Fundamentals</p>
+        </div>
+        <div class="cert">
+          <div class="status"><span class="dot"></span>In progress</div>
+          <h4>AZ-104</h4>
+          <p>Microsoft Azure Administrator</p>
+        </div>
+        <div class="cert">
+          <div class="status"><span class="dot"></span>In progress</div>
+          <h4>Terraform Associate</h4>
+          <p>HashiCorp Certified</p>
+        </div>
+        <div class="cert">
+          <div class="status"><span class="dot done"></span>Completed</div>
+          <h4>NSE 1–3</h4>
+          <p>Fortinet Network Security</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Experience</p>
+        <h2>Where I've worked</h2>
+      </div>
+      <div class="timeline">
+
+        <div class="job">
+          <div class="dates">Mar 2024 — Present</div>
+          <div>
+            <h3>Cloud & DevOps Engineer</h3>
+            <p class="org">Training & personal projects</p>
+            <ul>
+              <li>Building hands-on labs across Azure VMs, networking, AKS, App Services, Terraform and ARM templates</li>
+              <li>Practising CI/CD automation via Azure DevOps and GitHub Actions</li>
+              <li>Applying security best practices: Azure AD, Key Vault, RBAC, network isolation, monitoring, cost optimisation</li>
+              <li>Preparing AZ-104 and AZ-400; AZ-900 completed</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="dates">Mar 2023 — Dec 2023</div>
+          <div>
+            <h3>Cloud Specialist</h3>
+            <p class="org">Academic work — client: TAG Heuer (1,600 employees), La Chaux-de-Fonds, Switzerland</p>
+            <ul>
+              <li>Integrated 10+ project environments into Azure production, ensuring compliance with internal standards</li>
+              <li>Produced and standardised 15+ architecture and network diagrams</li>
+              <li>Implemented Azure Monitor dashboards for 40+ resources, cutting incident detection time by ~25%</li>
+              <li>Optimised Azure costs via Pricing Calculator, achieving ~15% projected savings</li>
+              <li>Led migration initiatives from on-premises to Azure (Azure Migrate)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="dates">Mar 2022 — Mar 2023</div>
+          <div>
+            <h3>System & Automation Engineer</h3>
+            <p class="org">Inetum — client: Thales Alenia Space (27,000+ employees), Toulouse, France</p>
+            <ul>
+              <li>Resolved complex Level 3 incidents, cutting escalation rates by 30%</li>
+              <li>Developed PowerShell automation scripts for application lifecycle operations</li>
+              <li>Standardised compliance with aerospace security and availability standards</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="dates">Mar 2020 — Dec 2021</div>
+          <div>
+            <h3>Application Integrator</h3>
+            <p class="org">Capgemini — client: Dassault Aviation (340,000 employees), Toulouse, France</p>
+            <ul>
+              <li>Managed end-to-end application integration and post-deployment usability checks</li>
+              <li>Implemented automation scripts (Python, Ansible, Terraform, Shell) for provisioning and monitoring</li>
+              <li>Mitigated critical incidents under ITIL, improving SLA compliance and reducing MTTR</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="dates">Dec 2018 — Sep 2019</div>
+          <div>
+            <h3>IT Technician</h3>
+            <p class="org">Oceatech Equipement Healthcare, Toulouse, France</p>
+            <ul>
+              <li>Provided L1/L2 support for healthcare professionals across software, hardware and medical devices</li>
+              <li>Delivered training sessions for healthcare workers across private practices and hospitals</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Projects</p>
+        <h2>What I'm building</h2>
+      </div>
+
+      <div class="project">
+        <div>
+          <h3 class="project-title"><a href="#">Secure Azure Landing Zone</a></h3>
+          <p class="desc">A hub-and-spoke network built in Terraform — firewall, RBAC, Key Vault, governance policies and a monitoring dashboard, designed around Azure Administrator (AZ-104) domains.</p>
+          <div class="tags"><span class="tag">Terraform</span><span class="tag">Networking</span><span class="tag">Azure Monitor</span><span class="tag">RBAC</span></div>
+        </div>
+        <div class="status-flag">In progress</div>
+      </div>
+
+      <div class="project">
+        <div>
+          <h3 class="project-title"><a href="#">AKS Platform with CI/CD</a></h3>
+          <p class="desc">A Kubernetes cluster provisioned with Terraform, deployed via a GitHub Actions pipeline, with Ansible-managed patch baselines and an incident runbook.</p>
+          <div class="tags"><span class="tag">AKS</span><span class="tag">Helm</span><span class="tag">GitHub Actions</span><span class="tag">Ansible</span></div>
+        </div>
+        <div class="status-flag">In progress</div>
+      </div>
+
+      <div class="project">
+        <div>
+          <h3 class="project-title"><a href="#">Case Study: Migrating a Swiss SME to Azure</a></h3>
+          <p class="desc">An end-to-end migration case study — discovery, target architecture, migration plan and Swiss data-residency considerations for a fictional retail company moving off-premises.</p>
+          <div class="tags"><span class="tag">Azure Migrate</span><span class="tag">Landing Zone</span><span class="tag">Compliance</span></div>
+        </div>
+        <div class="status-flag">In progress</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Contact</p>
+        <h2>Let's talk</h2>
+      </div>
+      <div class="contact-grid">
+        <div></div>
+        <ul class="contact-list">
+          <li><a href="mailto:hanifah.tsitohaina@gmail.com">hanifah.tsitohaina@gmail.com</a></li>
+          <li><a href="tel:+41766029766">+41 76 602 97 66</a></li>
+          <li><a href="https://www.linkedin.com/in/thn/" target="_blank" rel="noopener">linkedin.com/in/thn</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>© 2026 Hanifah Tsitohaina</span>
+    <span>Geneva, Switzerland</span>
+  </div>
+</footer>
+
+<script>
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('nav');
+  burger.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.querySelectorAll('#nav a.link').forEach(a=>{
+    a.addEventListener('click', ()=> nav.classList.remove('open'));
+  });
+</script>
+
+</body>
+</html>
