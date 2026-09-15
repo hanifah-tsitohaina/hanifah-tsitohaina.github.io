@@ -80,6 +80,10 @@
   }
   .headline .accent{color:var(--accent);}
   .lede{font-size:18px; color:var(--muted); max-width:46ch; margin:0 0 32px;}
+  .tagline{
+    font-style:italic; font-size:17px; color:var(--ink); font-weight:500;
+    margin:0 0 22px; padding-left:16px; border-left:2px solid var(--accent);
+  }
   .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
   .btn{
     display:inline-block; text-decoration:none; font-size:15px; font-weight:600;
@@ -106,6 +110,9 @@
   .about-text p{font-size:17px; max-width:62ch; margin:0 0 18px; color:#2b2e33;}
   .about-facts{list-style:none; margin:28px 0 0; padding:0; display:grid; gap:10px; font-size:15px; color:var(--muted);}
   .about-facts b{color:var(--ink); font-weight:600;}
+  .about-photo{display:grid; gap:16px;}
+  @media (max-width:700px){ .about-photo{max-width:220px;} }
+  .about-photo img{width:100%; aspect-ratio:3/4; object-fit:cover; border:1px solid var(--ink); display:block;}
 
   /* ---------- Skills ---------- */
   .skills-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:0; border-top:1px solid var(--line); border-left:1px solid var(--line);}
@@ -189,6 +196,7 @@
         <p class="eyebrow">Cloud Engineer — Microsoft Azure</p>
         <h1 class="headline">I build and secure Azure infrastructure, <span class="accent">as code.</span></h1>
         <p class="lede">Hands-on experience in cloud migration, infrastructure automation and Kubernetes workloads. Currently preparing AZ-104, based in Geneva and open to roles across Switzerland or remote.</p>
+        <p class="tagline">I don't wait for luck — I create it.</p>
         <div class="cta-row">
           <a class="btn primary" href="#projects">View projects</a>
           <a class="btn ghost" href="#contact">Get in touch</a>
@@ -223,7 +231,9 @@
         <h2>From on-the-ground IT support to cloud infrastructure</h2>
       </div>
       <div class="about-body">
-        <div></div>
+        <div class="about-photo">
+          <img src="photo.jpg" alt="Hanifah Tsitohaina">
+        </div>
         <div class="about-text">
           <p>I'm a Cloud Engineer with practical experience in Microsoft Azure, cloud migration and infrastructure automation — skilled in Terraform, Ansible and Kubernetes. My background spans application integration, systems automation and cloud operations across aerospace, luxury retail and healthcare environments before specialising fully in Azure.</p>
           <p>I'm particularly interested in application and database migrations, AKS workloads, monitoring, and the continuous improvement of production environments. Since March 2024 I've been working full-time on strengthening my Azure and DevOps skills through hands-on labs and personal projects, while preparing the AZ-104 and AZ-400 certifications.</p>
