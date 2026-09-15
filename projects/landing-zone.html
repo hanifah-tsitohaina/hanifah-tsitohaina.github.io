@@ -1,1 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Azure Landing Zone — Hanifah Tsitohaina</title>
+<meta name="description" content="A hub-and-spoke Azure landing zone built with Terraform — network segmentation, governance and monitoring.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171C;
+    --paper:#FAFAF8;
+    --panel:#EFEFEA;
+    --line:#D8D8D4;
+    --muted:#6B6F76;
+    --accent:#E0001B;
+    --max:1180px;
+    --code-bg:#14171C;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Archivo", sans-serif; font-weight:400; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 32px;}
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
 
+  /* ---------- Nav ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(250,250,248,0.92); backdrop-filter:saturate(180%) blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .nav .name{font-weight:700; font-size:17px; text-decoration:none; letter-spacing:-0.01em;}
+  .nav ul{list-style:none; display:flex; gap:28px; margin:0; padding:0;}
+  .nav a.link{ text-decoration:none; font-size:15px; color:var(--ink); padding:4px 2px; border-bottom:1px solid transparent; }
+  .nav a.link:hover, .nav a.link:focus-visible{border-bottom-color:var(--accent);}
+  @media (max-width:800px){ .nav ul{display:none;} }
+
+  /* ---------- Breadcrumb / project hero ---------- */
+  .crumb{padding:28px 0 0;}
+  .crumb a{font-size:14px; color:var(--muted); text-decoration:none; border-bottom:1px solid var(--line);}
+  .crumb a:hover{color:var(--accent); border-color:var(--accent);}
+
+  .p-hero{padding:20px 0 56px; border-bottom:1px solid var(--line);}
+  .status-row{display:flex; align-items:center; gap:10px; margin:20px 0 14px;}
+  .dot{width:8px; height:8px; border-radius:50%; border:1.5px solid var(--ink); display:inline-block;}
+  .status-row span.label{font-size:14px; color:var(--muted);}
+  h1.p-title{font-size:clamp(30px,4.5vw,48px); font-weight:800; letter-spacing:-0.02em; line-height:1.08; margin:0 0 18px;}
+  .p-pitch{font-size:18px; color:var(--muted); max-width:60ch; margin:0 0 24px;}
+  .tags{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px;}
+  .tag{font-size:12.5px; color:var(--muted); border:1px solid var(--line); padding:4px 10px; border-radius:2px;}
+  .link-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{ display:inline-block; text-decoration:none; font-size:15px; font-weight:600; padding:12px 20px; border-radius:2px; border:1px solid var(--ink); }
+  .btn.primary{background:var(--ink); color:var(--paper);}
+  .btn.primary:hover{background:var(--accent); border-color:var(--accent);}
+  .btn.ghost{background:transparent; color:var(--ink);}
+  .btn.ghost:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* ---------- Sections ---------- */
+  section{padding:64px 0; border-bottom:1px solid var(--line);}
+  .section-head{display:grid; grid-template-columns:200px 1fr; gap:32px; margin-bottom:32px;}
+  @media (max-width:700px){ .section-head{grid-template-columns:1fr; gap:8px;} }
+  .section-label{font-size:15px; color:var(--muted);}
+  h2{font-size:clamp(22px,3vw,28px); font-weight:700; letter-spacing:-0.01em; margin:0;}
+  .content-col{display:grid; grid-template-columns:200px 1fr; gap:32px;}
+  @media (max-width:700px){ .content-col{grid-template-columns:1fr;} }
+  .content-col p{font-size:16px; color:#2b2e33; max-width:64ch; margin:0 0 16px;}
+
+  /* ---------- Diagram ---------- */
+  .diagram-frame{border:1px solid var(--line); padding:24px; background:var(--panel);}
+  .diagram{width:100%; height:auto; display:block;}
+
+  /* ---------- Decisions list ---------- */
+  .decisions{display:grid; gap:0;}
+  .decision{padding:22px 0; border-top:1px solid var(--line);}
+  .decision:last-child{border-bottom:1px solid var(--line);}
+  .decision h3{font-size:16px; font-weight:700; margin:0 0 8px;}
+  .decision p{font-size:15px; color:var(--muted); margin:0; max-width:64ch;}
+
+  /* ---------- Code block ---------- */
+  pre{
+    background:var(--code-bg); color:#E7E7E2; padding:22px 24px; overflow-x:auto;
+    font-family:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size:13.5px; line-height:1.6; border-radius:2px; margin:0;
+  }
+  .code-caption{font-size:13.5px; color:var(--muted); margin:10px 0 0;}
+
+  /* ---------- Callout ---------- */
+  .callout{border:1px solid var(--ink); padding:24px 26px;}
+  .callout p.kicker{font-size:13px; color:var(--accent); font-weight:700; margin:0 0 10px;}
+  .callout ul{margin:0; padding-left:18px; font-size:15px; color:#2b2e33; display:grid; gap:8px;}
+
+  /* ---------- Table-ish list ---------- */
+  .kv-list{display:grid; gap:0; border-top:1px solid var(--line);}
+  .kv-row{display:grid; grid-template-columns:200px 1fr; gap:20px; padding:16px 0; border-bottom:1px solid var(--line); font-size:15px;}
+  @media (max-width:600px){ .kv-row{grid-template-columns:1fr;} }
+  .kv-row .k{color:var(--muted);}
+
+  .next-grid{display:grid; grid-template-columns:1fr 1fr; gap:32px;}
+  @media (max-width:700px){ .next-grid{grid-template-columns:1fr;} }
+  .next-grid h3{font-size:16px; margin:0 0 12px;}
+  .next-grid ul{margin:0; padding-left:18px; font-size:15px; color:#2b2e33; display:grid; gap:8px;}
+
+  footer{padding:32px 0;}
+  .foot-row{display:flex; justify-content:space-between; align-items:center; font-size:13.5px; color:var(--muted); flex-wrap:wrap; gap:10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="name" href="../index.html">Hanifah Tsitohaina</a>
+    <ul>
+      <li><a class="link" href="../index.html#about">About</a></li>
+      <li><a class="link" href="../index.html#skills">Skills</a></li>
+      <li><a class="link" href="../index.html#experience">Experience</a></li>
+      <li><a class="link" href="../index.html#projects">Projects</a></li>
+      <li><a class="link" href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+  <div class="wrap crumb">
+    <a href="../index.html#projects">← Back to projects</a>
+  </div>
+
+  <!-- PROJECT HERO -->
+  <section class="p-hero" style="padding-top:20px;">
+    <div class="wrap">
+      <div class="status-row">
+        <span class="dot"></span>
+        <span class="label">In progress — write-up published, infrastructure being built</span>
+      </div>
+      <h1 class="p-title">Secure Azure Landing Zone</h1>
+      <p class="p-pitch">A hub-and-spoke network foundation on Azure, built with Terraform: centralised security, network segmentation, governance and monitoring — designed as a reusable base for any workload placed on top of it.</p>
+      <div class="tags">
+        <span class="tag">Terraform</span>
+        <span class="tag">Networking</span>
+        <span class="tag">RBAC</span>
+        <span class="tag">Azure Policy</span>
+        <span class="tag">Azure Monitor</span>
+        <span class="tag">GitHub Actions</span>
+      </div>
+      <div class="link-row">
+        <a class="btn primary" href="#">View repository</a>
+        <a class="btn ghost" href="#architecture">Read the architecture</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTEXT -->
+  <section id="context">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Context</p>
+        <h2>Why a landing zone, and why hub-and-spoke</h2>
+      </div>
+      <div class="content-col">
+        <div></div>
+        <div>
+          <p>A landing zone is the base environment a company sets up before deploying any real workload on Azure — the network, the identity model, the guardrails. Getting it wrong is expensive: every workload built on top inherits its mistakes.</p>
+          <p>I chose the hub-and-spoke pattern because it's the one used in almost every enterprise Azure environment I've come across, including at TAG Heuer, where I worked on migration into an already-established Azure setup rather than designing the foundation itself. Building one from scratch here is my way of understanding the "why" behind decisions I previously just executed.</p>
+          <p>A hub-and-spoke also maps directly onto real constraints I'd expect at a company like Deloitte's "Sovereign Cloud Switzerland": centralised security and audit points, workloads isolated from each other, and an explicit boundary for where data is allowed to live.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Architecture</p>
+        <h2>Hub-and-spoke topology</h2>
+      </div>
+      <div class="content-col">
+        <div></div>
+        <div>
+          <div class="diagram-frame">
+            <svg class="diagram" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hub and spoke network architecture diagram">
+              <!-- peering lines -->
+              <line x1="360" y1="210" x2="150" y2="100" stroke="#6B6F76" stroke-width="1.5"/>
+              <line x1="360" y1="210" x2="150" y2="320" stroke="#6B6F76" stroke-width="1.5"/>
+              <line x1="360" y1="210" x2="570" y2="100" stroke="#6B6F76" stroke-width="1.5"/>
+              <!-- vpn to on-prem -->
+              <line x1="360" y1="210" x2="570" y2="320" stroke="#6B6F76" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+              <!-- hub -->
+              <rect x="300" y="175" width="120" height="70" fill="none" stroke="#14171C" stroke-width="1.5"/>
+              <circle cx="360" cy="210" r="6" fill="#E0001B"/>
+              <text x="360" y="203" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="#14171C">Hub VNet</text>
+              <text x="360" y="230" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="#6B6F76">Firewall · VPN GW · Bastion</text>
+
+              <!-- spoke prod -->
+              <rect x="90" y="65" width="130" height="70" fill="none" stroke="#14171C" stroke-width="1.5"/>
+              <text x="155" y="95" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="#14171C">Spoke — Prod</text>
+              <text x="155" y="115" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="#6B6F76">Workload subnet + NSG</text>
+
+              <!-- spoke non-prod -->
+              <rect x="90" y="285" width="130" height="70" fill="none" stroke="#14171C" stroke-width="1.5"/>
+              <text x="155" y="315" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="#14171C">Spoke — Non-Prod</text>
+              <text x="155" y="335" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="#6B6F76">Workload subnet + NSG</text>
+
+              <!-- identity / monitoring -->
+              <rect x="510" y="65" width="130" height="70" fill="none" stroke="#14171C" stroke-width="1.5"/>
+              <text x="575" y="95" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="#14171C">Azure AD + Key Vault</text>
+              <text x="575" y="115" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="#6B6F76">Identity &amp; secrets</text>
+
+              <!-- on-prem -->
+              <rect x="510" y="285" width="130" height="70" fill="none" stroke="#14171C" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <text x="575" y="315" text-anchor="middle" font-family="Archivo, sans-serif" font-size="13" font-weight="700" fill="#14171C">On-premises</text>
+              <text x="575" y="335" text-anchor="middle" font-family="Archivo, sans-serif" font-size="11" fill="#6B6F76">Site-to-site VPN</text>
+            </svg>
+          </div>
+          <p class="code-caption">Peered VNets (solid lines) route through the hub; the on-premises link (dashed) simulates a hybrid connection over VPN.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section id="decisions">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Technical decisions</p>
+        <h2>Choices, and why I made them</h2>
+      </div>
+      <div class="content-col">
+        <div></div>
+        <div class="decisions">
+          <div class="decision">
+            <h3>Hub-and-spoke over a single flat VNet</h3>
+            <p>A flat network is faster to stand up but every workload shares the same blast radius. Splitting prod and non-prod into separate spokes means a misconfiguration in a test environment can't reach production traffic.</p>
+          </div>
+          <div class="decision">
+            <h3>Azure Firewall centralised in the hub, not per-spoke NVAs</h3>
+            <p>One inspection point is easier to audit and cheaper to run than duplicating firewall appliances per spoke — and it matches how the "assessments and audits of existing deployments" requirement I've seen in job postings is usually structured in practice.</p>
+          </div>
+          <div class="decision">
+            <h3>Custom RBAC roles instead of built-in Owner/Contributor</h3>
+            <p>Built-in roles are broader than most people actually need. Scoping a custom role to exactly the actions a workload team requires is more work upfront but it's the difference between least-privilege and "it happened to work".</p>
+          </div>
+          <div class="decision">
+            <h3>Terraform over ARM/Bicep for this project</h3>
+            <p>I already use Bicep day-to-day for pure-Azure resources; Terraform is the more transferable skill across employers who run multi-cloud or hybrid environments, and it's what I'm certifying on (Terraform Associate).</p>
+          </div>
+          <div class="decision">
+            <h3>Region restricted to Switzerland North / West via Azure Policy</h3>
+            <p>Not a real client requirement here, but a deliberate constraint: it mirrors the data-residency conversations that come up for a "Sovereign Cloud Switzerland"-style platform, and it's a good excuse to practise Azure Policy rather than just trusting defaults.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IAC STRUCTURE -->
+  <section id="structure">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Infrastructure as code</p>
+        <h2>Repository structure</h2>
+      </div>
+      <div class="content-col">
+        <div></div>
+        <div>
+          <p>Modules are split by concern so each one can be tested, versioned and reused independently of the environment it's deployed into.</p>
+<pre>landing-zone/
+├── modules/
+│   ├── network/        # hub + spoke VNets, peering, subnets, NSGs
+│   ├── security/        # Azure Firewall, Bastion, VPN Gateway
+│   ├── identity/         # custom RBAC roles, Key Vault, access policies
+│   ├── governance/    # Azure Policy definitions & assignments
+│   └── monitoring/    # Log Analytics workspace, alert rules, dashboard
+├── environments/
+│   ├── prod/                # environment-specific tfvars
+│   └── nonprod/
+├── .github/workflows/
+│   └── terraform.yml   # plan on PR, manual approval before apply
+└── README.md</pre>
+          <p class="code-caption">Each module exposes only the variables an environment actually needs to override — region, address space, and tags — everything else stays fixed to avoid drift between environments.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GOVERNANCE & MONITORING -->
+  <section id="governance">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Governance &amp; monitoring</p>
+        <h2>Keeping the environment honest</h2>
+      </div>
+      <div class="content-col">
+        <div></div>
+        <div>
+          <div class="kv-list">
+            <div class="kv-row"><div class="k">Naming convention</div><div>Enforced through Azure Policy — resource type, environment and region encoded in every name (e.g. <code>vnet-hub-prod-chn</code>)</div></div>
+            <div class="kv-row"><div class="k">Allowed locations</div><div>Switzerland North / Switzerland West only, denied elsewhere at the policy level</div></div>
+            <div class="kv-row"><div class="k">Mandatory tags</div><div><code>owner</code>, <code>environment</code>, <code>cost-center</code> — deployments without them are rejected</div></div>
+            <div class="kv-row"><div class="k">CI/CD pipeline</div><div>GitHub Actions runs <code>terraform plan</code> on every pull request; <code>apply</code> requires a manual approval gate</div></div>
+            <div class="kv-row"><div class="k">Monitoring</div><div>Centralised Log Analytics workspace in the hub, with alert rules for failed sign-ins and resource health</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AZ-104 MAPPING -->
+  <section id="az104" style="border-bottom:none;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Certification</p>
+        <h2>How this maps to AZ-104</h2>
+      </div>
+      <div class="content-col">
+        <div></div>
+        <div class="callout">
+          <p class="kicker">AZ-104 domains covered</p>
+          <ul>
+            <li>Configure and manage virtual networks (peering, NSGs, routing)</li>
+            <li>Manage identities and governance (RBAC, Azure Policy)</li>
+            <li>Implement and manage storage and secrets (Key Vault)</li>
+            <li>Monitor and maintain Azure resources (Log Analytics, alerts)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <section id="status" style="border-bottom:none; padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="section-label">Status</p>
+        <h2>Built so far, and what's next</h2>
+      </div>
+      <div class="content-col">
+        <div></div>
+        <div class="next-grid">
+          <div>
+            <h3>Done</h3>
+            <ul>
+              <li>Architecture designed and documented</li>
+              <li>Network and governance module structure defined</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Next</h3>
+            <ul>
+              <li>Write and test the Terraform modules end to end</li>
+              <li>Wire up the GitHub Actions pipeline</li>
+              <li>Deploy to a free-tier Azure subscription and publish the repository</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>© 2026 Hanifah Tsitohaina</span>
+    <a href="../index.html#projects" style="text-decoration:none; border-bottom:1px solid var(--line);">← Back to projects</a>
+  </div>
+</footer>
+
+</body>
+</html>
